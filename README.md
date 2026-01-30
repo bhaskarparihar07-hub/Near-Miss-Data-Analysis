@@ -83,41 +83,36 @@ A near miss in construction refers to an unplanned event that could have resulte
 
 ### System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Frontend - Next.js                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │  Dashboard   │  │    Chart     │  │   AI Chat    │     │
-│  │      UI      │──│  Components  │  │  Interface   │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-│         │                                      │            │
-│         └──────────────────┬──────────────────┘            │
-└────────────────────────────┼──────────────────────────────┘
-                             │ HTTP/REST
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Backend - Node.js API                      │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              Express Server                          │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │  │
-│  │  │  Incidents │  │ Statistics │  │     AI     │    │  │
-│  │  │   Routes   │  │   Routes   │  │   Routes   │    │  │
-│  │  └────────────┘  └────────────┘  └────────────┘    │  │
-│  └──────────────────────────────────────────────────────┘  │
-│         │                    │                  │           │
-│         ▼                    ▼                  ▼           │
-│  ┌─────────────┐      ┌─────────────┐   ┌─────────────┐   │
-│  │    Data     │      │ Aggregation │   │   Gemini    │   │
-│  │   Loader    │      │  Functions  │   │   Service   │   │
-│  └─────────────┘      └─────────────┘   └─────────────┘   │
-│         │                                       │           │
-└─────────┼───────────────────────────────────────┼──────────┘
-          │                                       │
-          ▼                                       ▼
-   ┌─────────────┐                      ┌─────────────────┐
-   │  JSON File  │                      │  Google Gemini  │
-   │ 7,836 rows  │                      │      API        │
-   └─────────────┘                      └─────────────────┘
+```mermaid
+graph TB
+    subgraph "Frontend - Next.js"
+        A[Dashboard UI] --> B[Chart Components]
+        A --> C[AI Chat Interface]
+        A --> D[Filters & Controls]
+    end
+    
+    subgraph "Backend - Node.js API"
+        E[Express Server] --> F[Data Processing Layer]
+        F --> G[JSON Data Loader]
+        F --> H[Statistics Calculator]
+        E --> I[Gemini AI Service]
+    end
+    
+    subgraph "Data Layer"
+        J[(JSON File<br/>7,836 records)]
+    end
+    
+    subgraph "External Services"
+        K[Google Gemini API]
+    end
+    
+    A -->|HTTP Requests| E
+    G -->|Load & Parse| J
+    I -->|AI Queries| K
+    
+    style A fill:#4CAF50
+    style E fill:#2196F3
+    style K fill:#FF9800
 ```
 
 ### API Endpoints
